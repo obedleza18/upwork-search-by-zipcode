@@ -40,6 +40,11 @@ function upwork_franchise_map_activate() {
 }
 
 function upwork_franchise_map_uninstall() {
+    
+    /**
+     *  Cleanup Database when Uninstalling.
+     */
+    
     delete_option( 'upwork_franchise' );
 }
 
