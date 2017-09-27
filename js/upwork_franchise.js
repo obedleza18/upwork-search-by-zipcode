@@ -6,6 +6,11 @@
     'use strict';
 
     $( document ).ready( function() {
+        
+        /**
+         *  Function that add an input text field and triggers the AJAX function to display the Franchises options
+         *  on a modal window.
+         */
 
         var main_header = $( 'header.main-header .limit-wrapper .header-contents .second-row' );
         var search_box = $( '<input id="upwork_zip_code"/>' )
@@ -60,33 +65,7 @@
                 },
                 columnClass: 'medium',
             });
-                // content: function() {
-                //     $.ajax( { 
-                //     data: {
-                //         action: 'upwork_get_franchises_options',
-                //         zip_code: zip_code_sanitized_value
-                //     },
-                //     type: 'post',
-                //     url: upwork_franchise_custom_object.ajax_url,
-                //     success: function( response ) {
-                        
-                //         if ( response.success ) {
-                //             ajax_response = response;
-                //         }
-                //     },
-                //     error: function( response ) {
-                //         console.log('Error');
-                //     }
-                // } );
-                // },
-                // onContentReady: function () {
-                //     var self = this;
-                //     this.setContentPrepend(response);
-                // },
-                // columnClass: 'medium',
-
         } );
-
     } );
 
     jQuery( window ).load(

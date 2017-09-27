@@ -6,18 +6,30 @@ add_action( 'wp_enqueue_scripts', 'upwork_franchise_scripts' );
 add_action( 'wp_ajax_upwork_get_franchises_options', 'upwork_get_franchises_options' );
 
 function upwork_get_franchises_options() {
+    
+    /**
+     *  AJAX Function to obtain the desired franchise. It receives the zip_code in the $_POST and finds the closest Franchise.
+     */
+    
     $zip_code = isset( $_POST['zip_code'] ) ? $_POST['zip_code'] : '';
 
+    /*  Loads the database that Maps the Zip Code to a County Code and finds the desired County Code. */
     $county_code = get_county_code( get_option( 'upwork_franchise' )['upwork-franchise-import-data'], $zip_code );
 
+    /*  Loads the database that Maps the County Code to Franchises and finds the options of Franchises. */
     $franchises_options = get_franchises_options( get_option( 'upwork_franchise' )['upwork-franchise-import-locations'], $county_code );
 
+    /*  Randmoize Franchise options. */
     shuffle( $franchises_options );
 
     wp_send_json_success( $franchises_options );
 }
 
 function upwork_franchise_scripts() {
+    
+    /**
+     *  Function that enqueues the scripts and stylesheet needed. Also localizes the JS code.
+     */
 
     wp_enqueue_style( 'upwork_franchise_custom_style', plugin_dir_url( __FILE__ ) . 'css/style.css' );
 
@@ -53,6 +65,11 @@ function upwork_franchise_scripts() {
 }
 
 function upwork_franchise_map_import_page() {
+    
+    /**
+     *  Function to add the Menu Page.
+     */
+    
     add_menu_page(
         __( 'Franchise Map Import', 'upwork-franchise-map' ),
         __( 'Franchise Map', 'upwork-franchise-map' ),
@@ -62,6 +79,11 @@ function upwork_franchise_map_import_page() {
 }
 
 function upwork_franchise_map_settings_init() {
+    
+    /**
+     *  Function to register the settings, add the sections and add the fields.
+     */
+    
     register_setting(
         'upwork_franchise_group',
         'upwork_franchise',
@@ -93,26 +115,51 @@ function upwork_franchise_map_settings_init() {
 }
 
 function upwork_franchise_section_info() {
+    
+    /**
+     *  Information of the Settings Section.
+     */
+    
     _e( 'Copy and paste the CSV contents to this area and save changes to import data.', 'upwork-franchise-map' );
 }
 
 function upwork_franchise_map_input_field() {
+    
+    /**
+     *  Input field HTML for loading the Franchise Map Database.
+     */
+    
     $options = get_option( 'upwork_franchise' );
     $map_value = isset( $options['upwork-franchise-import-data'] ) ? $options['upwork-franchise-import-data'] : '';
     echo '<textarea rows="10" id="upwork-franchise-import-data" name="upwork_franchise[upwork-franchise-import-data]">' . $map_value . '</textarea>';
 }
 
 function upwork_franchise_locations_input_field() {
+    
+    /**
+     *  Input field HTML for loading the Franchise Map Database.
+     */
+    
     $options = get_option( 'upwork_franchise' );
     $locations_value = isset( $options['upwork-franchise-import-locations'] ) ? $options['upwork-franchise-import-locations'] : '';
     echo '<textarea rows="10" id="upwork-franchise-import-locations" name="upwork_franchise[upwork-franchise-import-locations]">' . $locations_value . '</textarea>';
 }
 
 function upwork_franchise_sanitize_fields( $input ) {
+    
+    /**
+     *  Function that sanitizes setting fields. On this case we are not going to sanitize the Databases.
+     */
+    
     return $input;
 }
 
 function get_county_code( $csv, $item ) {
+    
+    /**
+     *  Function that receives the Franchise Map Zip Code to County Codes. Finds and return the match.
+     */
+    
     $csv_keys_values = preg_split( '/\n/', $csv );
     for ( $i = 1; $i < count($csv_keys_values); $i++ ) {
         $csv_values = str_getcsv($csv_keys_values[$i], ",");
@@ -125,6 +172,11 @@ function get_county_code( $csv, $item ) {
 }
 
 function get_franchises_options( $csv, $county_code ) {
+    
+    /**
+     *  Function that receives the County Code and finds the Franchises Options.
+     */
+    
     $csv_keys_values = preg_split( '/\n/', $csv );
     $csv_keys = preg_split( '/,/', $csv_keys_values[0] );
     $arr = array();
